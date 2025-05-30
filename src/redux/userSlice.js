@@ -47,6 +47,7 @@ const userSlice = createSlice({
       state.userInfo = null;
       state.isAuthenticated = false;
       state.sessionChecked = true;
+      state.token = null;
     },
     updateUserInfo: (state, action) => {
       state.userInfo = action.payload;
