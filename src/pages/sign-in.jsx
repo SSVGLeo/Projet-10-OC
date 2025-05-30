@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -37,12 +38,14 @@ export function SignIn() {
         );
         const profileData = await profilResponse.json();
         console.log(profileData);
-
+        localStorage.setItem("token", token);
         dispatch(loginSuccess({ token, userInfo: profileData.body }));
+
+        setError(false);
 
         navigate("/user");
       } else {
-        alert("Invalid email or password");
+        setError(true);
       }
     } catch (error) {
       console.error(error);
@@ -77,11 +80,7 @@ export function SignIn() {
             <input type="checkbox" id="remember-me" />
             <label for="remember-me">Remember me</label>
           </div>
-          {/* <!-- PLACEHOLDER DUE TO STATIC SITE --> */}
-          {/* <Link to="/user" className="sign-in-button">
-            Sign In
-          </Link> */}
-          {/* <!-- SHOULD BE THE BUTTON BELOW --> */}
+          { error === true && <p className="error-message">Invalid email or password</p>}
           <button class="sign-in-button" type="submit">
             Sign In
           </button>

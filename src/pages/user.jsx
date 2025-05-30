@@ -1,21 +1,56 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useState } from "react";
+import { updateUserInfo } from "../redux/userSlice";
 
 export function User() {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const sessionChecked = useSelector((state) => state.user.sessionChecked);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
+    console.log("🛡️ sessionChecked:", sessionChecked, "| isAuthenticated:", isAuthenticated);
+    if (sessionChecked && !isAuthenticated) {
+      navigate("/sign-in");
     }
-  }, [isAuthenticated, navigate]);
+  }, [sessionChecked, isAuthenticated, navigate]);
 
-  const userInfo = useSelector((state) => state.user.userInfo);
+  console.log(userInfo);
+
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUserName, setEditedUserName] = useState(userInfo.userName);
+  const [editedUserName, setEditedUserName] = useState(() =>userInfo?.userName || '');
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/v1/user/profile",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ userName: editedUserName }),
+        }
+      );
+      const data = await response.json();
+    console.log("API response :", data);
+
+    if (data.status === 200) {
+      dispatch(updateUserInfo({ ...userInfo, userName: editedUserName }));
+      setIsEditing(false);
+    } else {
+      console.error("Erreur de mise à jour :", data.message);
+    }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+    }
+  }
 
   return (
     <section className="main bg-dark">
@@ -44,20 +79,12 @@ export function User() {
             ></input>
 
             <label for="firstname">First name:</label>
-            <input
-              disabled
-              id="firstname"
-              value={userInfo.firstName}
-            ></input>
+            <input disabled id="firstname" value={userInfo.firstName}></input>
 
             <label for="lastname">Last name:</label>
-            <input
-              disabled
-              id="lastname"
-              value={userInfo.lastName}
-            ></input>
+            <input disabled id="lastname" value={userInfo.lastName}></input>
 
-            <button onClick={() => setIsEditing((prev) => !prev)} type="submit">
+            <button onClick={handleSave} type="submit">
               Save
             </button>
             <button onClick={() => setIsEditing((prev) => !prev)}>
