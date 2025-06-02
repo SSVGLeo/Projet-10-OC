@@ -32,6 +32,10 @@ const initialState = {
     isAuthenticated: false,
     sessionChecked: false,
     token: null,
+    rememberedCredentials: {
+      email: "",
+      password: "",
+    },
   };  
 
 const userSlice = createSlice({
@@ -61,7 +65,16 @@ const userSlice = createSlice({
     },
     markSessionChecked: (state) => {
         state.sessionChecked = true;
-    }
+    },
+    rememberedCredentials: (state, action) => {
+        state.rememberedCredentials = action.payload;
+    },
+    clearRememberedCredentials: (state) => {
+        state.rememberedCredentials = {
+            email: "",
+            password: "",
+        };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -74,5 +87,5 @@ const userSlice = createSlice({
   }
 });
 
-export const { loginSuccess, logout, updateUserInfo, restoreSession, noSessionFound, markSessionChecked } = userSlice.actions;
+export const { loginSuccess, logout, updateUserInfo, restoreSession, noSessionFound, markSessionChecked, rememberedCredentials, clearRememberedCredentials } = userSlice.actions;
 export default userSlice.reducer;

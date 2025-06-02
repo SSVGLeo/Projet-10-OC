@@ -14,7 +14,12 @@ export function User() {
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
-    console.log("🛡️ sessionChecked:", sessionChecked, "| isAuthenticated:", isAuthenticated);
+    console.log(
+      "🛡️ sessionChecked:",
+      sessionChecked,
+      "| isAuthenticated:",
+      isAuthenticated
+    );
     if (sessionChecked && !isAuthenticated) {
       navigate("/sign-in");
     }
@@ -23,7 +28,9 @@ export function User() {
   console.log(userInfo);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUserName, setEditedUserName] = useState(() =>userInfo?.userName || '');
+  const [editedUserName, setEditedUserName] = useState(
+    () => userInfo?.userName || ""
+  );
 
   const handleSave = async () => {
     try {
@@ -39,18 +46,18 @@ export function User() {
         }
       );
       const data = await response.json();
-    console.log("API response :", data);
+      console.log("API response :", data);
 
-    if (data.status === 200) {
-      dispatch(updateUserInfo({ ...userInfo, userName: editedUserName }));
-      setIsEditing(false);
-    } else {
-      console.error("Erreur de mise à jour :", data.message);
-    }
+      if (data.status === 200) {
+        dispatch(updateUserInfo({ ...userInfo, userName: editedUserName }));
+        setIsEditing(false);
+      } else {
+        console.error("Erreur de mise à jour :", data.message);
+      }
     } catch (error) {
       console.error("Erreur réseau :", error);
     }
-  }
+  };
 
   return (
     <section className="main bg-dark">
@@ -68,28 +75,41 @@ export function User() {
           Edit Name
         </button>
         {isEditing && (
-          <div>
-            <label for="username">User name:</label>
-            <input
-              placeholder={userInfo.userName}
-              id="username"
-              type="text"
-              value={editedUserName}
-              onChange={(e) => setEditedUserName(e.target.value)}
-            ></input>
+          <div className="edit-form">
+            <div className="edit-form-content">
+              <div className="edit-form-input">
+                <label for="username">User name:</label>
+                <input
+                  placeholder={userInfo.userName}
+                  id="username"
+                  type="text"
+                  value={editedUserName}
+                  onChange={(e) => setEditedUserName(e.target.value)}
+                ></input>
+              </div>
 
-            <label for="firstname">First name:</label>
-            <input disabled id="firstname" value={userInfo.firstName}></input>
+              <div className="edit-form-input">
+                <label for="firstname">First name:</label>
+                <input
+                  disabled
+                  id="firstname"
+                  value={userInfo.firstName}
+                ></input>
+              </div>
 
-            <label for="lastname">Last name:</label>
-            <input disabled id="lastname" value={userInfo.lastName}></input>
-
-            <button onClick={handleSave} type="submit">
-              Save
-            </button>
-            <button onClick={() => setIsEditing((prev) => !prev)}>
-              Cancel
-            </button>
+              <div className="edit-form-input">
+                <label for="lastname">Last name:</label>
+                <input disabled id="lastname" value={userInfo.lastName}></input>
+              </div>
+            </div>
+            <div className="edit-form-button">
+              <button className="edit-button" onClick={handleSave} type="submit">
+                Save
+              </button>
+              <button className="edit-button" onClick={() => setIsEditing((prev) => !prev)}>
+                Cancel
+              </button>
+            </div>
           </div>
         )}
       </div>
