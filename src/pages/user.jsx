@@ -14,18 +14,10 @@ export function User() {
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
-    console.log(
-      "🛡️ sessionChecked:",
-      sessionChecked,
-      "| isAuthenticated:",
-      isAuthenticated
-    );
     if (sessionChecked && !isAuthenticated) {
       navigate("/sign-in");
     }
   }, [sessionChecked, isAuthenticated, navigate]);
-
-  console.log(userInfo);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedUserName, setEditedUserName] = useState(
@@ -46,7 +38,6 @@ export function User() {
         }
       );
       const data = await response.json();
-      console.log("API response :", data);
 
       if (data.status === 200) {
         dispatch(updateUserInfo({ ...userInfo, userName: editedUserName }));
