@@ -23,7 +23,6 @@ export function SignIn() {
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (data.body && data.body.token) {
         const token = data.body.token;
@@ -39,7 +38,6 @@ export function SignIn() {
           }
         );
         const profileData = await profilResponse.json();
-        console.log(profileData);
         localStorage.setItem("token", token);
         dispatch(loginSuccess({ token, userInfo: profileData.body }));
 
