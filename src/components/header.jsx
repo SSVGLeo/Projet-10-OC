@@ -16,7 +16,7 @@ export function Header() {
 
   return (
     <nav className="main-nav">
-      <Link to="/" className="main-nav-logo">
+      <Link to="/Projet-10-OC/" className="main-nav-logo">
         <img
           className="main-nav-logo-image"
           src="/argentBankLogo.png" // Corrige le chemin
